@@ -27,17 +27,21 @@ authSession.post("/login", (req, res) => {
 });
 
 authSession.get("/profile", (req, res) => {
-  const { cookies } = req;
-  if (!cookies) return res.sendStatus(404);
+  try {
+    const { cookies } = req;
+    if (!cookies) return res.sendStatus(404);
 
-  const session = sessions.find((s) => s.sessionId === cookies.loginCookie);
-  if (!session) return res.sendStatus(400);
+    const session = sessions.find((s) => s.sessionId === cookies.loginCookie);
+    if (!session) return res.sendStatus(400);
 
-  const user = Users.find((user) => user.guid === session.guid);
+    const user = Users.find((user) => user.guid === session.guid);
 
-  delete user.password;
+    delete user.password;
 
-  res.send(user);
+    res.send(user);
+  } catch (error) {
+    res.sendStatus(500)
+  }
 });
 
 export default authSession;
