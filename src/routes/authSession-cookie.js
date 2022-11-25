@@ -11,8 +11,8 @@ authSession.post("/login", (req, res) => {
   if (!email || !password) return res.sendStatus(401);
 
   const user = Users.find((user) => user.email === email);
-  if (!user) return res.sendStatus(403);
-  if (user.password !== password) return res.sendStatus(404);
+  if (!user) return res.sendStatus(400);
+  if (user.password !== password) return res.sendStatus(401);
 
   const guid = user.guid;
 
@@ -29,7 +29,7 @@ authSession.post("/login", (req, res) => {
 authSession.get("/profile", (req, res) => {
   try {
     const { cookies } = req;
-    if (!cookies) return res.sendStatus(404);
+    if (!cookies) return res.sendStatus(400);
 
     const session = sessions.find((s) => s.sessionId === cookies.loginCookie);
     if (!session) return res.sendStatus(400);
@@ -40,7 +40,7 @@ authSession.get("/profile", (req, res) => {
 
     res.send(user);
   } catch (error) {
-    res.sendStatus(500)
+    res.sendStatus(400);
   }
 });
 
